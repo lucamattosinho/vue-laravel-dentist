@@ -2,7 +2,7 @@
   <div class="app-container">
     <a-layout>
       <a-layout-header class="header">
-        <div class="logo">Clínica Odontooo</div>
+        <div class="logo">Clínica Odonto</div>
       </a-layout-header>
       <a-layout-content class="content">
         <a-tabs v-model:activeKey="activeTab">
@@ -83,6 +83,13 @@ html, body {
 :deep(.ant-layout) {
   width: 100%;
   height: 100vh;
+}
+
+:deep(.ant-tabs) {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  
 }
 
 

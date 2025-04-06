@@ -6,37 +6,56 @@
         + Cadastrar
       </a-button>
     </div>
-
-    <a-list bordered :data-source="pacientes" :loading="carregando">
-      <template #renderItem="{ item }">
-        <a-list-item>
-          {{ item.first_name }} {{ item.last_name }}
-          <template #actions>
-            <a @click="editarPaciente(item.id)">Editar</a>
-            <a @click="deletarPaciente(item.id)" style="color: red">Excluir</a>
-          </template>
-        </a-list-item>
-      </template>
-    </a-list>
+    <a-space direction="vertical" style="width: 100%">
+      <a-input
+        v-model:value="nameFilter"
+        placeholder="Filtrar por nome"
+        style="width: 100%"
+        @input="filterName"
+        class="form-half"
+      />
+      <a-list bordered :data-source="pacientesFiltrados" :loading="carregando">
+        <template #renderItem="{ item }">
+          <a-list-item>
+            {{ item.first_name }} {{ item.last_name }}
+            <template #actions>
+              <a @click="editarPaciente(item.id)">Editar</a>
+              <a-popconfirm
+                  title="Tem certeza que deseja excluir este paciente?"
+                  ok-text="Sim"
+                  cancel-text="Não"
+                  @confirm="deletarPaciente(item.id)"
+              >
+              <a style="color: red">Excluir</a>
+              </a-popconfirm>
+            </template>
+          </a-list-item>
+        </template>
+      </a-list>
+    </a-space>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import { List, Button } from 'ant-design-vue';
+import { List, Button, Input, Popconfirm, Space } from 'ant-design-vue';
 
 export default {
   components: {
     'a-list': List,
     'a-list-item': List.Item,
     'a-button': Button,
+    'a-input': Input,
+    'a-popconfirm': Popconfirm,
+    'a-space': Space,
   },
   setup() {
     const pacientes = ref([]);
     const carregando = ref(false);
     const router = useRouter();
+    const nameFilter = ref('');
 
     const carregarPacientes = async () => {
       try {
@@ -49,6 +68,14 @@ export default {
         carregando.value = false;
       }
     };
+
+    const pacientesFiltrados = computed(() => {
+      return pacientes.value.filter(paciente => {
+        const nomeCompleto = `${paciente.first_name} ${paciente.last_name}`.toLowerCase();
+        const matchesName = !nameFilter.value || nomeCompleto.includes(nameFilter.value.toLowerCase());
+        return matchesName;
+      });
+    });
 
     const irParaCadastro = () => {
       router.push('/pacientes/cadastrar');
@@ -69,7 +96,15 @@ export default {
 
     onMounted(carregarPacientes);
 
-    return { pacientes, carregando, irParaCadastro, deletarPaciente, editarPaciente };
+    return { 
+      pacientes, 
+      carregando, 
+      irParaCadastro, 
+      deletarPaciente, 
+      editarPaciente,
+      nameFilter,
+      pacientesFiltrados,
+    };
   },
 };
 </script>

@@ -50,7 +50,8 @@ class ConsultaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $consulta = Consulta::with('paciente')->findOrFail($id);
+        return response()->json($consulta);
     }
 
     /**

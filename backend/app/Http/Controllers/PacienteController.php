@@ -51,7 +51,8 @@ class PacienteController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $paciente = Paciente::findOrFail($id);
+        return response()->json($paciente);
     }
 
     /**

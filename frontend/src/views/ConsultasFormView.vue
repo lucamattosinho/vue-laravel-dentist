@@ -3,7 +3,7 @@
   </template>
   
   <script>
-  import CadastroConsultas from '@/components/CadastroConsultas.vue';
+  import CadastroConsultas from '@/components/ConsultasForm.vue';
   
   export default {
     components: { CadastroConsultas }

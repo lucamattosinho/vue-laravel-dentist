@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CadastroPacientes from '@/components/CadastroPacientes.vue';
+import CadastroPacientes from '@/components/PacientesForm.vue';
 
 export default {
   components: { CadastroPacientes }

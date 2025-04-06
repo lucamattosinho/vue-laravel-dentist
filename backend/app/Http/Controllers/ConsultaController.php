@@ -66,7 +66,9 @@ class ConsultaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $consulta = Consulta::findOrFail($id);
+        $consulta->update($request->all());
+        return response()->json($consulta);
     }
 
     /**
@@ -74,6 +76,10 @@ class ConsultaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $consulta = Consulta::findOrFail($id);
+        $consulta->delete();
+        return response()->json([
+            'message' => 'Consulta deletada com sucesso.',
+        ]);
     }
 }

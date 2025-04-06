@@ -11,6 +11,10 @@
       <template #renderItem="{ item }">
         <a-list-item>
           {{ item.first_name }} {{ item.last_name }}
+          <template #actions>
+            <a @click="editarPaciente(item.id)">Editar</a>
+            <a @click="deletarPaciente(item.id)" style="color: red">Excluir</a>
+          </template>
         </a-list-item>
       </template>
     </a-list>
@@ -50,9 +54,22 @@ export default {
       router.push('/pacientes/cadastrar');
     };
 
+    const editarPaciente = (id) => {
+      router.push(`/pacientes/editar/${id}`);
+    };
+
+    const deletarPaciente = async (id) => {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/pacientes/${id}`);
+        await carregarPacientes(); // recarrega a lista
+      } catch (err) {
+        console.error("Erro ao deletar paciente:", err);
+      }
+    };
+
     onMounted(carregarPacientes);
 
-    return { pacientes, carregando, irParaCadastro };
+    return { pacientes, carregando, irParaCadastro, deletarPaciente, editarPaciente };
   },
 };
 </script>

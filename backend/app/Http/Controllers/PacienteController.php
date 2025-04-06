@@ -67,7 +67,9 @@ class PacienteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $paciente = Paciente::findOrFail($id);
+        $paciente->update($request->all());
+        return response()->json($paciente);
     }
 
     /**
@@ -75,6 +77,8 @@ class PacienteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $paciente = Paciente::findOrFail($id);
+        $paciente->delete();
+        return response()->json(['message' => 'Paciente deletado']);
     }
 }

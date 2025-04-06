@@ -104,6 +104,7 @@ export default {
       editarPaciente,
       nameFilter,
       pacientesFiltrados,
+      carregarPacientes,
     };
   },
 };

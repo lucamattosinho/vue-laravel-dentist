@@ -2,7 +2,18 @@
   <div class="app-container">
     <a-layout>
       <a-layout-header class="header">
-        <div class="logo">Clínica Odonto</div>
+        <div class="header-content">
+          <div class="logo">Clínica Odonto</div>
+          <a-button
+            v-if="isLoggedIn"
+            type="primary"
+            danger
+            @click="logout"
+          >
+            <LogoutOutlined />
+            Sair
+          </a-button>
+        </div>
       </a-layout-header>
       <a-layout-content class="content">
         <!-- Mostrar tabs apenas nas rotas principais -->
@@ -29,7 +40,8 @@
 <script>
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Layout, Tabs } from 'ant-design-vue';
+import { Layout, Tabs, Button, Modal } from 'ant-design-vue';
+import { LogoutOutlined } from '@ant-design/icons-vue';
 import Consultas from './components/Consultas.vue';
 import Pacientes from './components/Pacientes.vue';
 
@@ -40,9 +52,43 @@ export default {
     'a-layout-content': Layout.Content,
     'a-tabs': Tabs,
     'a-tab-pane': Tabs.TabPane,
+    'a-button': Button,
+    'a-modal': Modal,
     Consultas,
     Pacientes,
+    LogoutOutlined,
   },
+  data() {
+    return {
+      isLoggedIn: false
+    };
+  },
+  mounted() {
+    this.checkLogin();
+    window.addEventListener('user-logged-in', this.checkLogin);
+  },
+  beforeUnmount() {
+    window.removeEventListener('user-logged-in', this.checkLogin);
+  },
+  methods: {
+    checkLogin() {
+      this.isLoggedIn = !!localStorage.getItem('token')
+    },
+    logout() {
+      this.$confirm({
+      title: 'Deseja realmente sair?',
+      content: 'Você precisará fazer login novamente para acessar o sistema.',
+      okText: 'Sim',
+      cancelText: 'Cancelar',
+      onOk: () => {
+        localStorage.removeItem('token');
+        this.isLoggedIn = false;
+        this.$router.push({ name: 'login' });
+      },
+      });
+    },
+  },
+
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -65,6 +111,7 @@ export default {
       activeTab,
       isTabRoute,
       onTabChange,
+      LogoutOutlined,
     };
   },
 };
@@ -119,6 +166,13 @@ html, body {
   height: 100%;
   display: flex;
   
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 

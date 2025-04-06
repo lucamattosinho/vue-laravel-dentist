@@ -5,21 +5,30 @@
         <div class="logo">Clínica Odonto</div>
       </a-layout-header>
       <a-layout-content class="content">
-        <a-tabs v-model:activeKey="activeTab">
-          <a-tab-pane key="consultas" tab="Consultas">
-            <Consultas />
-          </a-tab-pane>
-          <a-tab-pane key="pacientes" tab="Pacientes">
-            <Pacientes />
-          </a-tab-pane>
-        </a-tabs>
+        <!-- Mostrar tabs apenas nas rotas principais -->
+        <template v-if="isTabRoute">
+          <a-tabs :activeKey="activeTab" @change="onTabChange">
+            <a-tab-pane key="consultas" tab="Consultas">
+              <Consultas />
+            </a-tab-pane>
+            <a-tab-pane key="pacientes" tab="Pacientes">
+              <Pacientes />
+            </a-tab-pane>
+          </a-tabs>
+        </template>
+
+        <!-- Mostrar outras views (como cadastro) fora das tabs -->
+        <template v-else>
+          <router-view />
+        </template>
       </a-layout-content>
     </a-layout>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { Layout, Tabs } from 'ant-design-vue';
 import Consultas from './components/Consultas.vue';
 import Pacientes from './components/Pacientes.vue';
@@ -35,8 +44,28 @@ export default {
     Pacientes,
   },
   setup() {
-    const activeTab = ref('consultas');
-    return { activeTab };
+    const route = useRoute();
+    const router = useRouter();
+
+    const tabRoutes = ['consultas', 'pacientes'];
+
+    const activeTab = computed(() => {
+      return tabRoutes.includes(route.name) ? route.name : 'consultas';
+    });
+
+    const isTabRoute = computed(() => {
+      return tabRoutes.includes(route.name);
+    });
+
+    const onTabChange = (key) => {
+      router.push({ name: key });
+    };
+
+    return {
+      activeTab,
+      isTabRoute,
+      onTabChange,
+    };
   },
 };
 </script>

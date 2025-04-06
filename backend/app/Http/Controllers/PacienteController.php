@@ -13,7 +13,7 @@ class PacienteController extends Controller
      */
     public function index()
     {
-        //
+        return Paciente::all();
     }
 
     /**
@@ -21,7 +21,7 @@ class PacienteController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
